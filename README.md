@@ -8,6 +8,8 @@ The project currently only runs on Ubuntu. Specifically, Ubuntu 16.04. Due to in
 
 Run the following instructions on the Linux Ubuntu 16.04 computer.
 
+For the app to work properly, the `important.py` file must be downloaded to this computer. Please do this now.
+
 To install this package, go to the top right of this repository and click "Clone or Download". Click "Download ZIP".
 
 Now open a terminal by pressing the following keys simultaneously:
@@ -19,7 +21,7 @@ Now open a terminal by pressing the following keys simultaneously:
 Copy and paste the following into the terminal:
 
 ```
-cd Downloads && sudo apt install unzip && unzip nirvana-master.zip && cd nirvana-master && ./install.sh && ./run.sh
+cd Downloads && sudo apt install unzip && unzip nirvana-master.zip && cd nirvana-master && mv ../important.py app/ && ./install.sh && ./run.sh
 ```
 
 The above commands install docker for Redis and all dependencies. After running the command, the app will be running on `localhost:5000`.
