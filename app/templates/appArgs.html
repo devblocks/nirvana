@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<title></title>
+	<meta charset="utf-8" />
+</head>
+<body>
+	<div class="container">
+		<div class="row mt-4">
+			<div class="col-lg-12">
+				<div class="card card-body">
+
+					<form method="post" action="./data" >
+
+						<h2>Specify marketing date range:</h2>
+
+						<div class="row mb-3">
+							<div class="col-lg-6">
+								<input class='form-control' id="Date" name="startDate" type="date" />
+							</div>
+							<div class="col-lg-6">
+								<input class='form-control' id="Days" name="endDate" type="date" />
+							</div>
+						</div>	
+
+						<div class="row mb-3">
+							<div class="col-lg-6">
+								<h5>Date range for marketing attribution:</h5>
+							</div>
+							<div class="col-lg-6">
+								<input class='form-control' id="Att" name="attribDays" min="0" max="365" step="1" type="number" placeholder="Please input a number" />
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<div class="col-lg-6">
+								<h5>Date range for event attribution:</h5>
+							</div>
+
+							<div class="col-lg-6">
+								<input class='form-control' id="Ev" name="eventDays" min="0" max="365" step="1" type="number" placeholder="Please input a number" />
+							</div>
+						</div>
+
+						</br>
+
+						<h6>Configuration File (optional):</h6>
+						<i id='loading' style='display:none;' class="fa fa-fw fa-spin fa-spinner"></i>
+						<div class="input-group mb-3">
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" id="inputGroupFile03" value="Upload" name="config">
+								<label class="custom-file-label" for="inputGroupFile03" id="file_label">Upload File...</label>
+							</div>
+							<div class="input-group-prepend">
+								<button class="btn btn-success" type="button" id="file">Upload</button>
+							</div>
+						</div>
+
+						<input class='btn btn-success' value="Generate Report" type="submit" />
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		// sendResult - sends the JSON data to server's /config route
+		function sendResult (payload) {
+			
+			$('#loading').show()
+			$.ajax({
+				type: 'POST',
+				url: './config',
+				dataType: 'json',
+				contentType: 'application/json',
+				data: JSON.stringify({ config: payload }),
+				success: function (resp) {
+					console.log("resp:");
+					console.log(resp);
+					$('#loading').hide()
+					$('#result').text(JSON.stringify(resp, null, 2));
+					// window.location = "./config";
+				},
+				error: function (obj) {
+					console.log('ERROR!')
+					console.log(obj)
+				}
+			});
+		};
+
+		// Adds click handler to #file button
+		// document.getElementById('file').onclick = function() {
+		$('#file').on('click', function() {
+
+			// Isolates the files from the input[type=file] element
+			var files = document.getElementById('inputGroupFile03').files;
+			console.log(files);
+
+			// Short-circuits the click handler if no files are present
+			if (files.length <= 0) return false;
+
+			// Instantaites new FileReader
+			var fr = new FileReader();
+
+			// FileReader.onload callback assignmnet
+			// This callback is invoked after the fr.readAsText() is complete
+			fr.onload = function(e) { 
+				var result = JSON.parse(e.target.result);
+				console.log(result);
+				
+				// Displays the JSON in the #result element
+				var formatted = JSON.stringify(result, null, 2);
+				$('#result').text(formatted);
+
+				// Sends the data to the server
+				return sendResult(result);
+			}
+
+			// FileReader.readAsText()
+			// This reads the raw text value inside the selected file
+			fr.readAsText(files.item(0));
+
+		});
+
+	</script>
+
+</body>
+</html>
